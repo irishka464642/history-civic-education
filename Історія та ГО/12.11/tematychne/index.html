@@ -21,7 +21,7 @@
 <div class="actions"><button type="submit" id="send" class="btn">Здати роботу →</button><p class="warning" id="connection-warning">З'єднання з журналом результатів ще налаштовується. Учитель має підключити приватну Google Таблицю, перш ніж можна буде надіслати роботу.</p><p class="note">Якщо виникає помилка — повідом учителя. Не надсилай одну роботу багато разів без потреби.</p></div></form></main><footer><div class="wrap">Навчальне оцінювання · Історія та громадянська освіта · 12.11 · Відповіді не публікуються на GitHub.</div></footer>
 <script>
 /* Після розгортання приватного Google Apps Script вставити сюди його /exec URL. */
-const RESULTS_ENDPOINT="";
+const RESULTS_ENDPOINT="https://script.google.com/macros/s/AKfycbxaMCNzm_yGKrg5_AJRkAD6nKOCE1jeZybWlr3qOxl2iXZk1932ho--yWiKlpyhZ-94/exec";
 const form=document.getElementById("assessment"),send=document.getElementById("send"),warning=document.getElementById("connection-warning");
 if(!RESULTS_ENDPOINT.startsWith("https://script.google.com/macros/s/")){send.disabled=true;warning.classList.remove("hidden")}else{form.action=RESULTS_ENDPOINT;warning.classList.add("hidden")}
 form.addEventListener("submit",e=>{if(!RESULTS_ENDPOINT){e.preventDefault();return}document.getElementById("submittedAt").value=new Date().toISOString();if(!window.confirm("Усі відповіді перевірені? Надіслати тематичну роботу?"))e.preventDefault()});
