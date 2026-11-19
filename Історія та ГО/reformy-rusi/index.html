@@ -128,7 +128,21 @@
 <div class="rubric-item"><strong>2</strong><b>Аргументація</b><p><small>Власна позиція, факти і контраргумент, чіткий висновок.</small></p><label><input type="checkbox" data-rubric="argument"> Я це продемонстрував/-ла</label></div>
 </div>
 <p class="note" style="margin-top:11px">Позначки означають виконання критеріїв, а не автоматично присвоєні бали. Оцінку за рівнем якості відповіді визначає вчитель/-ка.</p>
-<div class="panel" style="margin-top:24px"><h3>Експортуйте роботу</h3><p>Відповіді зберігаються лише у вашому браузері. Немає акаунтів, серверної бази даних чи автоматичного надсилання вчителю. Завантажте текстовий файл і передайте його в узгоджений спосіб.</p><label class="field" for="studentName">Ім'я та прізвище <span>(необов'язково; для експорту)</span></label><input id="studentName" type="text" data-save="studentName" autocomplete="off" placeholder="Учень / учениця">
+<div class="panel" style="margin-top:24px" id="submissionPanel">
+<span class="mini-label">Для учнів · передавання результату вчителю</span>
+<h3>Надіслати виконану роботу</h3>
+<p>Після підключення вчителем Google Apps Script натисніть «Надіслати роботу». В одному повідомленні буде передано ваші письмові відповіді, вибори в завданнях, результат тренувального тесту, ім’я та клас. Копія залишиться в приватній таблиці вчителя.</p>
+<div class="write-grid">
+<div><label class="field" for="studentName">Ім'я та прізвище <span>(обов’язкове для онлайн-надсилання)</span></label><input id="studentName" type="text" data-save="studentName" autocomplete="name" maxlength="120" placeholder="Як до вас звертаються у класі"></div>
+<div><label class="field" for="className">Клас / група <span>(обов’язкове для онлайн-надсилання)</span></label><input id="className" type="text" data-save="className" autocomplete="off" maxlength="60" placeholder="Наприклад: 10-А"></div>
+</div>
+<label class="submit-agreement"><input type="checkbox" id="shareAnswers"><span>Я розумію, що натискання кнопки передасть мої відповіді, ім’я та клас вчителю для перевірки. Адреса електронної пошти учня не запитується.</span></label>
+<div class="honeypot" aria-hidden="true"><label for="contactWebsite">Залиште поле порожнім</label><input id="contactWebsite" type="text" tabindex="-1" autocomplete="off"></div>
+<div class="actions"><button class="btn gold" type="button" id="submitToTeacher">Надіслати роботу вчителю →</button></div>
+<p class="submission-state" id="submissionStatus" role="status" aria-live="polite">Перевіряємо підключення приймання робіт…</p>
+<p class="note">Важливо: GitHub Pages не може самостійно підтвердити, що лист або запис у таблиці доставлено. Після відправлення уточніть у вчителя, чи робота надійшла. Якщо сервіс тимчасово недоступний — завантажте текстовий файл нижче.</p>
+</div>
+<div class="panel" style="margin-top:24px"><h3>Експортуйте роботу</h3><p>Відповіді зберігаються лише у вашому браузері. Немає акаунтів, серверної бази даних чи автоматичного надсилання вчителю. Завантажте текстовий файл і передайте його в узгоджений спосіб.</p>
 <div class="actions"><button class="btn primary" id="exportAnswers">↓ Зберегти мою роботу (.txt)</button><button class="btn secondary" id="printWorksheet">Друк / PDF</button><button class="btn secondary" id="clearAnswers">Очистити локальні відповіді</button></div><p class="note" id="saveStatus">Відповіді зберігаються автоматично на пристрої.</p></div>
 </section>
 </main>
@@ -136,5 +150,6 @@
 <div><h3>Навчальна основа</h3><p>Модельна навчальна програма «Інтегрований курс історії та громадянської освіти. 10–12 класи. Поглиблений рівень» (авт. Д. Секиринський, Н. Власова, О. Желіба та ін.), розділ «Людина і влада», с. 12–14 PDF. У центрі — аналіз історичних джерел, порівняння владних практик і причинно-наслідкове мислення.</p></div>
 <div><h3>Джерела та методичні примітки</h3><p>І. Щупак та ін., «Історія та громадянська освіта», 10 клас, поглиблений рівень, ч. 1: с. 305–311, 327–329 PDF (доступний учителю в наданих матеріалах). Короткі уривки в розділі «Джерела» подані за навчальним текстом. Дати, зміст реформ і висновки звірено із цими матеріалами.</p><p>Літопис — джерело з авторською позицією; висновки про сучасне право не можна прямо виводити зі звичаїв XI–XII століть. Сайт призначений для навчального аналізу, а не для ідеалізації князівської влади.</p><p><a href="https://github.com/irishka464642/history-civic-education/tree/main/%D0%86%D1%81%D1%82%D0%BE%D1%80%D1%96%D1%8F%20%D1%82%D0%B0%20%D0%93%D0%9E/reformy-rusi">Код практикуму на GitHub</a></p></div>
 </div></footer>
+<script src="./submission-config.js" defer></script>
 <script src="./app.js" defer></script>
 </body></html>
