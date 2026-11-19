@@ -119,7 +119,7 @@ document.querySelectorAll('[data-rubric]').forEach(function(box){var key='rubric
 updateProgress();
 
 function textExport(){
- var lines=['ІНТЕРАКТИВНИЙ ПРАКТИКУМ: РЕФОРМИ РУСІ-УКРАЇНИ', 'Ім’я: '+(data.studentName||'не зазначено'),'Дата експорту: '+new Date().toLocaleString('uk-UA'),'','1. ПОРІВНЯННЯ РЕФОРМ'];
+ var lines=['ІНТЕРАКТИВНИЙ ПРАКТИКУМ: РЕФОРМИ РУСІ-УКРАЇНИ', 'Ім’я: '+(data.studentName||'не зазначено'),'Клас / група: '+(data.className||'не зазначено'),'Дата експорту: '+new Date().toLocaleString('uk-UA'),'','1. ПОРІВНЯННЯ РЕФОРМ'];
  var tasks=['Передбачуваність влади','Віра і закон','Інтереси суспільних груп','Найдовша післядія'];
  tasks.forEach(function(s,i){lines.push(s+': '+(data['cmp'+(i+1)]||'—'));});
  lines.push('','2. АНАЛІЗ ДЖЕРЕЛ');
@@ -137,6 +137,21 @@ function textExport(){
  lines.push('','Джерела: І. Щупак та ін., Історія та громадянська освіта, 10 клас (поглиблений рівень), PDF с. 305–311, 327–329; модельна програма, PDF с. 12–14.');
  return lines.join('\n');
 }
+// Дозволяє зовнішньому модулю відправки отримати лише дані цієї роботи.
+window.PRACTICUM_GET_SUBMISSION_SNAPSHOT=function(){
+ var checked=Boolean(data.quizChecked);
+ var correct=quiz.reduce(function(a,q,i){return a+(Number(data['q'+i])===q.ok?1:0);},0);
+ var written=Object.keys(data).filter(function(k){
+  return k==='thesis'||/^cmp[1-4]$/.test(k)||/^src-/.test(k)||/^leg[1-4]$/.test(k)||k==='caseArgument';
+ }).some(function(k){return has(k);});
+ return {
+  answersText:textExport(),
+  quizScore:checked?correct+' / '+quiz.length:'не перевірено',
+  progress:parseInt(el('progressText').textContent,10)||0,
+  hasWrittenAnswer:written
+ };
+};
+
 el('exportAnswers').addEventListener('click',function(){var blob=new Blob([textExport()],{type:'text/plain;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='praktikum-reformy-rusi.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);el('saveStatus').textContent='Файл роботи сформовано. Перевірте папку завантажень.';});
 el('printWorksheet').addEventListener('click',function(){window.print();});
 el('clearAnswers').addEventListener('click',function(){if(window.confirm('Видалити всі відповіді, вибори та самооцінювання з цього браузера?')){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}window.location.reload();}});
