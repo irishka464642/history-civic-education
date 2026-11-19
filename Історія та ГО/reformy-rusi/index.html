@@ -131,7 +131,7 @@
 <div class="panel" style="margin-top:24px" id="submissionPanel">
 <span class="mini-label">Для учнів · передавання результату вчителю</span>
 <h3>Надіслати виконану роботу</h3>
-<p>Після підключення вчителем Google Apps Script натисніть «Надіслати роботу». В одному повідомленні буде передано ваші письмові відповіді, вибори в завданнях, результат тренувального тесту, ім’я та клас. Копія залишиться в приватній таблиці вчителя.</p>
+<p>Після підключення вчителем поштового приймання натисніть «Надіслати роботу». На електронну пошту вчителя надійде лист із вашими письмовими відповідями, виборами в завданнях, результатом тренувального тесту, ім’ям та класом. Жодних Google Таблиць немає.</p>
 <div class="write-grid">
 <div><label class="field" for="studentName">Ім'я та прізвище <span>(обов’язкове для онлайн-надсилання)</span></label><input id="studentName" type="text" data-save="studentName" autocomplete="name" maxlength="120" placeholder="Як до вас звертаються у класі"></div>
 <div><label class="field" for="className">Клас / група <span>(обов’язкове для онлайн-надсилання)</span></label><input id="className" type="text" data-save="className" autocomplete="off" maxlength="60" placeholder="Наприклад: 10-А"></div>
@@ -140,9 +140,9 @@
 <div class="honeypot" aria-hidden="true"><label for="contactWebsite">Залиште поле порожнім</label><input id="contactWebsite" type="text" tabindex="-1" autocomplete="off"></div>
 <div class="actions"><button class="btn gold" type="button" id="submitToTeacher">Надіслати роботу вчителю →</button></div>
 <p class="submission-state" id="submissionStatus" role="status" aria-live="polite">Перевіряємо підключення приймання робіт…</p>
-<p class="note">Важливо: GitHub Pages не може самостійно підтвердити, що лист або запис у таблиці доставлено. Після відправлення уточніть у вчителя, чи робота надійшла. Якщо сервіс тимчасово недоступний — завантажте текстовий файл нижче.</p>
+<p class="note">Важливо: GitHub Pages не може самостійно підтвердити доставку листа. Після відправлення уточніть у вчителя, чи робота надійшла. Якщо лист не прийшов — повторіть спробу або завантажте файл нижче.</p>
 </div>
-<div class="panel" style="margin-top:24px"><h3>Експортуйте роботу</h3><p>До натискання кнопки онлайн-надсилання відповіді зберігаються лише у вашому браузері. Якщо приймання робіт налаштоване, після натискання «Надіслати» копія надійде у приватну таблицю вчителя, а також може бути надіслана йому листом. Завантаження файлу нижче працює незалежно від онлайн-сервісу.</p>
+<div class="panel" style="margin-top:24px"><h3>Експортуйте роботу</h3><p>До натискання кнопки онлайн-надсилання відповіді зберігаються лише у вашому браузері. Після натискання «Надіслати» робота передається в поштовий сервіс вчителя. На сайті та в Google Таблицях її додаткові копії не створюються. Завантаження файлу нижче працює незалежно від пошти.</p>
 <div class="actions"><button class="btn primary" id="exportAnswers">↓ Зберегти мою роботу (.txt)</button><button class="btn secondary" id="printWorksheet">Друк / PDF</button><button class="btn secondary" id="clearAnswers">Очистити локальні відповіді</button></div><p class="note" id="saveStatus">Відповіді зберігаються автоматично на пристрої.</p></div>
 </section>
 </main>
