@@ -8,7 +8,7 @@ function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}c
 function el(id){return document.getElementById(id);}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function has(key){return String(data[key]||'').trim().length>0;}
-function scrollTop(){window.scrollTo({top:document.querySelector('.stagebar').getBoundingClientRect().top+window.scrollY-8,behavior:'smooth'});}
+function scrollTop(){var top=document.querySelector('.site-top').offsetHeight+document.querySelector('.hero').offsetHeight-4;window.scrollTo({top:top,behavior:'smooth'});}
 function showView(id,doScroll){
  document.querySelectorAll('.view').forEach(function(s){s.classList.toggle('active',s.id===id);});
  document.querySelectorAll('.tab').forEach(function(b){var on=b.getAttribute('data-view')===id;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');});
