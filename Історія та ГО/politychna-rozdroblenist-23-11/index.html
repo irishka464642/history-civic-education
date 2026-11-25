@@ -129,7 +129,7 @@ table{width:100%;border-collapse:collapse;margin:17px 0;font-size:14px}th,td{pad
 <section class="step" data-panel="4" id="step5" hidden>
 <div class="eyebrow">Фінальний крок • 10 хв</div>
 <h2>Сформулюй висновок і надішли вчителю</h2>
-<p class="lead">Відповідай на три запитання. У лист автоматично потраплять також твої відповіді за джерелами й тест.</p>
+<p class="lead">Напиши свій висновок. У лист автоматично потраплять також заповнені відповіді за джерелами й тест. Можна надіслати незавершену роботу.</p>
 <label class="question-label" for="loss">1. Один аргумент: чому роздробленість послаблювала державу?</label>
 <textarea class="answer" id="loss" data-save placeholder="Політична роздробленість послаблювала державу, тому що..."></textarea>
 <label class="question-label" for="growth">2. Один аргумент: як вона сприяла розвитку регіонів?</label>
@@ -150,10 +150,11 @@ table{width:100%;border-collapse:collapse;margin:17px 0;font-size:14px}th,td{pad
 <input type="hidden" name="_captcha" value="true">
 <input type="text" name="_honey" tabindex="-1" aria-hidden="true" autocomplete="off" style="display:none">
 <button class="button primary" type="submit" id="submitButton">Надіслати вчителю на пошту</button>
-<div id="sendStatus" role="status" aria-live="polite" class="small" style="margin-top:12px;color:var(--muted)">Надсилання відкриє FormSubmit у новій вкладці; для відправлення потрібен інтернет.</div>
+<button type="button" class="button secondary" id="backupSubmit" hidden style="margin-top:10px">Не вдалося? Спробувати резервне надсилання</button>
+<div id="sendStatus" role="status" aria-live="polite" class="small" style="margin-top:12px;color:var(--muted)">Після натискання з’явиться результат надсилання. У разі проблеми доступний резервний спосіб.</div>
 </form>
 <div style="margin-top:15px"><button type="button" class="button secondary" id="download">Зберегти відповіді у файл (.txt)</button></div>
-<p class="tip" style="margin-top:14px">Доставка листа не підтверджується самим сайтом. Учитель перевіряє поштову скриньку; для нової адреси FormSubmit може знадобитися одноразова активація.</p>
+<p class="tip" style="margin-top:14px">Якщо сервіс повідомить про необхідність активації адреси, учитель має підтвердити її через лист від FormSubmit. Адреса отримувача — irishka464642@gmail.com.</p>
 </section>
 <div class="navigation-footer">
 <span class="nav-hint" id="navHint">Крок 1 із 5</span>
@@ -211,20 +212,74 @@ return "ТЕМА: Політична роздробленість: занепа�
 "ОСОБИСТИЙ ВИСНОВОК:\n"+$("conclusion").value.trim()+"\n\n"+
 "ТЕСТ: "+q.score+" із "+questions.length+" (заповнено "+q.filled+")\n"+q.lines;
 }
-$("submission").addEventListener("submit",function(e){
+$("submission").addEventListener("submit",async function(e){
+e.preventDefault();
+var form=$("submission"), msg=$("sendStatus"), send=$("submitButton"), backup=$("backupSubmit");
 var name=$("studentName").value.trim().replace(/\s+/g," ");
-var mandatory=["loss","growth","conclusion"];
-var absent=mandatory.filter(function(id){return $(id).value.trim().length<12;});
-var msg=$("sendStatus");
-if(name.split(" ").length<2){e.preventDefault();msg.className="notice error";msg.textContent="Вкажи прізвище та ім’я (два слова).";$("studentName").focus();return;}
-if(absent.length){e.preventDefault();msg.className="notice error";msg.textContent="Спершу напиши три підсумкові відповіді (аргумент про ризики, аргумент про розвиток та висновок).";$(absent[0]).focus();return;}
-if(!$("privacy").checked){e.preventDefault();msg.className="notice error";msg.textContent="Підтвердь згоду на відправлення роботи.";return;}
-if(!navigator.onLine){e.preventDefault();msg.className="notice error";msg.textContent="Немає інтернету. Роботу збережено в браузері. Повтори надсилання після підключення.";return;}
-$("fullSubmission").value=getReport();var r=getQuiz();
-$("submissionScore").value=r.score+" / "+questions.length;
+var full=getReport(), r=getQuiz();
+if(name.split(" ").length<2){
+ msg.className="notice error";
+ msg.textContent="Вкажи прізвище та ім’я — два слова.";
+ $("studentName").focus();return;
+}
+if(!["src1","src2","src3","loss","growth","conclusion"].some(function(id){return $(id).value.trim().length>0;})&&r.filled===0){
+ msg.className="notice error";
+ msg.textContent="Спочатку дай хоча б одну відповідь або пройди тест.";return;
+}
+if(!$("privacy").checked){msg.className="notice error";msg.textContent="Постав позначку згоди на надсилання роботи.";return;}
+if(!navigator.onLine){msg.className="notice error";msg.textContent="Немає інтернету. Відповіді зберігаються в браузері.";return;}
+var subject=("Історія 23.11 — "+name).replace(/[\r\n]/g," ").slice(0,140);
+$("fullSubmission").value=full;
+$("submissionScore").value=r.score+" / "+questions.length+" (відповіли: "+r.filled+")";
 $("submissionDate").value=new Date().toLocaleString("uk-UA");
-$("subject").value=("Історія 23.11 — "+name).replace(/[\r\n]/g," ").slice(0,140);
-msg.className="notice warn";msg.textContent="Відкривається FormSubmit у новій вкладці. Завершіть перевірку там. Успішну доставку підтверджує лист у скриньці вчителя.";
+$("subject").value=subject;
+backup.hidden=true;
+send.disabled=true;
+send.textContent="Надсилаємо…";
+msg.className="notice warn";
+msg.textContent="Надсилаємо роботу на особисту пошту вчителя. Не закривай сторінку.";
+try{
+ var payload={
+   "Прізвище та ім’я":name,
+   "Вся робота":full,
+   "Результат тесту":$("submissionScore").value,
+   "Дата надсилання":$("submissionDate").value,
+   "_subject":subject,
+   "_template":"table",
+   "_captcha":"false",
+   "_honey":""
+ };
+ var response=await fetch("https://formsubmit.co/ajax/irishka464642@gmail.com",{
+   method:"POST",
+   headers:{"Content-Type":"application/json","Accept":"application/json"},
+   body:JSON.stringify(payload)
+ });
+ var data=await response.json();
+ // FormSubmit може повернути success як рядок "false", що є truthy у JS.
+ if(response.ok&&(data.success===true||data.success==="true")){
+   msg.className="notice";
+   msg.textContent="✓ Сервіс прийняв роботу для надсилання вчителю. Адреса отримувача: irishka464642@gmail.com. Остаточну доставку підтверджує лист у скриньці вчителя.";
+   store("lastAccepted",{name:name,date:$("submissionDate").value,score:r.score});
+ }else{
+   var reason=typeof data.message==="string"?data.message:"Сервіс не підтвердив прийняття роботи.";
+   msg.className="notice error";
+   msg.textContent="Не вдалося надіслати: "+reason+" Натисни резервну кнопку нижче.";
+   backup.hidden=false;
+ }
+}catch(error){
+ msg.className="notice error";
+ msg.textContent="Не вдалося зв'язатися із сервісом надсилання. Перевір інтернет або скористайся резервним способом нижче.";
+ backup.hidden=false;
+}finally{
+ send.disabled=false;
+ send.textContent="Надіслати вчителю на пошту";
+}
+});
+$("backupSubmit").addEventListener("click",function(){
+ var msg=$("sendStatus");
+ msg.className="notice warn";
+ msg.textContent="Відкривається сторінка FormSubmit для резервного надсилання. За потреби виконай перевірку CAPTCHA. Успішну доставку підтверджує отриманий лист.";
+ $("submission").submit();
 });
 $("download").addEventListener("click",function(){var name=$("studentName").value.trim()||"Учень";var content="Прізвище та ім’я: "+name+"\n\n"+getReport();var blob=new Blob(["\ufeff"+content],{type:"text/plain;charset=utf-8"});var url=URL.createObjectURL(blob);var link=document.createElement("a");link.href=url;link.download="Робота_політична_роздробленість.txt";document.body.append(link);link.click();link.remove();setTimeout(function(){URL.revokeObjectURL(url);},2000);});
 go(read("currentStep",0));
